@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المسبحة الالكترونية 📿</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100vh;
+            background-color: #000000;
+            margin: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+        }
+
+        #phrase {
+            font-size: 1.5em;
+            color: #f4ffd5;
+            margin-bottom: 10px;
+        }
+
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #71ff6a;
+            color: #000000;
+            font-size: 5em;
+            margin: 15px 0;
+            box-shadow: 100px 100px 100px rgba(0, 0, , 0.1);
+        }
+            
+        button {
+            font-size: 1.4em;
+            padding: 10.1px 20.5px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+        }
+
+        #tasbeehBtn {
+            background-color: #ff9e55;
+            color: #000000;
+        }
+
+        #resetBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #backBtn {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 200px;
+            margin-top: 180px;
+        }
+
+        .social-links a {
+            color: #00c0ff;
+            font-size: 1.5em;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 2px solid #2600ff;
+            border-radius: 50px;
+        }
+
+        .social-links a:hover {
+            background-color: #ff000a;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صفحة البداية -->
+    <div id="startPage">
+        <h1>مرحبا بك في موقع التسبيح الالكتروني ، قم بأختيار نوع التسبيح</h1>
+        <button onclick="selectTasbeeh('fatima')">تسبيح فاطمة الزهراء عليها السلام 📿</button>
+        <button onclick="selectTasbeeh('infinite')">📿تسبيح لا نهائي</button>
+        <button onclick="selectTasbeeh('mohammad')">تسبيح الصلاة على محمد وآل محمد🕋</button>
+    </div>
+
+    <!-- صفحة التسبيح -->
+    <div id="tasbeehPage" class="hidden">
+        <h1> ❤سبح الان بما اخترت❤</h1>
+        <div id="phrase">📿سبحان الله📿</div>
+        <div class="counter-container" id="counter">0</div>
+        <button id="tasbeehBtn" onclick="incrementCounter()">🌺تسبيح🌺</button>
+        <button id="resetBtn" onclick="resetCounter()">°تصفير°</button>
+        <button id="backBtn" onclick="goBack()">→رجوع←</button>
+
+        <!-- روابط التواصل الاجتماعي -->
+        <div class="social-links">
+            <a href="https://t.me/Altaee_z" target="_blank">تلگرام</a>
+            <a href="https://t.me/my00002" target="_blank">قناني</a>
+        </div>
+    </div>
+
+    <script>
+        let counter = 0;
+        let phrases = [];
+        let currentPhraseIndex = 0;
+        let selectedMode = '';
+
+        const tasbeehTypes = {
+            'fatima': [
+                { phrase: "الله أكبر", limit: 34 },
+                { phrase: "سبحان الله", limit: 33 },
+                { phrase: "الحمد لله", limit: 34 }
+            ],
+            'infinite': [],
+            'mohammad': ["اللهم صل على محمد وآل محمد"]
+        };
+
+        function selectTasbeeh(type) {
+            selectedMode = type;
+            currentPhraseIndex = 0;
+            counter = 0;
+
+            if (type === 'infinite') {
+                let userPhrase = prompt("يرجى إدخال جملة التسبيح:");
+                if (userPhrase) {
+                    phrases = [userPhrase];
+                    document.getElementById("phrase").textContent = phrases[0];
+                    showTasbeehPage();
+                }
+            } else {
+                phrases = type === 'fatima' ? tasbeehTypes[type].map(obj => obj.phrase) : tasbeehTypes[type];
+                document.getElementById("phrase").textContent = phrases[currentPhraseIndex];
+                showTasbeehPage();
+            }
+
+            document.getElementById("counter").textContent = counter;
+        }
+
+        function showTasbeehPage() {
+            document.getElementById("startPage").classList.add("hidden");
+            document.getElementById("tasbeehPage").classList.remove("hidden");
+        }
+
+        function goBack() {
+            document.getElementById("tasbeehPage").classList.add("hidden");
+            document.getElementById("startPage").classList.remove("hidden");
+            resetCounter();
+        }
+
+        function incrementCounter() {
+            if (selectedMode === 'fatima') {
+                const currentLimit = tasbeehTypes['fatima'][currentPhraseIndex].limit;
+                if (counter < currentLimit) {
+                    counter++;
+                    document.getElementById("counter").textContent = counter;
+                } else {
+                    currentPhraseIndex++;
+                    if (currentPhraseIndex < tasbeehTypes['fatima'].length) {
+                        counter = 1;
+                        document.getElementById("phrase").textContent = phrases[currentPhraseIndex];
+                        document.getElementById("counter").textContent = counter;
+                    } else {
+                        completeFatimaTasbeeh();
+                    }
+                }
+            } else {
+                counter++;
+                document.getElementById("counter").textContent = counter;
+            }
+        }
+
+        function completeFatimaTasbeeh() {
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+            alert("تم اكتمال التسبيح بارك الله بك ❤");
+            goBack();
+        }
+
+        function resetCounter() {
+            counter = 0;
+            document.getElementById("counter").textContent = counter;
+        }
+    </script>
+
+</body>
+</html>
